@@ -4,38 +4,17 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>BDJobs Job Sync</title>
+  <title>BDJobs Token Sync</title>
   <link rel="stylesheet" href="popup.css">
 </head>
 
 <body>
 
-  <main>
-    <h2>BDJobs Job Sync</h2>
+  <main id="app">
+    <h2>BDJobs Token Sync</h2>
+    <p>Send your BDJobs job seeker token to the API.</p>
 
-    <p>
-      Fetch jobs using your existing BDJobs session.
-    </p>
-
-    <label>BDJobs API URL</label>
-    <input id="sourceUrl" type="url"
-      value="https://api.bdjobs.com/jobs/api/v1/JobSearch/GetJobSearch?pg=1&rpp=500&ToggleJobs=true&isFresher=false">
-
-    <label>Backend API URL</label>
-    <input id="backendUrl" type="url" placeholder="https://api.example.com/api/jobs/sync">
-
-    <label>Backend API Key (Optional)</label>
-    <input id="apiKey" type="password" placeholder="Backend API key">
-
-    <button id="saveBtn">Save Settings</button>
-
-    <button id="syncBtn">
-      Fetch & Sync Jobs
-    </button>
-
-    <button id="sendTokenBtn">
-      Send BDJobs Access Token
-    </button>
+    <button type="button" id="sendBtn">Send Token</button>
 
     <div id="status"></div>
   </main>

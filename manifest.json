@@ -1,9 +1,9 @@
 
 {
   "manifest_version": 3,
-  "name": "BDJobs Job Sync",
+  "name": "BDJobs Token Sync",
   "version": "1.0.0",
-  "description": "Fetch BDJobs jobs and sync them to your backend.",
+  "description": "Send the BDJobs job seeker access token to the configured API.",
   "action": {
     "default_popup": "popup.html"
   },
@@ -17,11 +17,6 @@
   "host_permissions": [
     "https://bdjobs.com/*",
     "https://*.bdjobs.com/*",
-    "https://api.bdjobs.com/*"
-  ],
-  "optional_host_permissions": [
-    "https://*/*",
-    "http://localhost/*",
-    "http://127.0.0.1/*"
+    "https://fb8dhvtj-3000.inc1.devtunnels.ms/*"
   ]
 }

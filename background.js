@@ -1,42 +1,5 @@
-function countJobs(payload) {
-  if (Array.isArray(payload)) {
-    return payload.length;
-  }
-
-  if (!payload || typeof payload !== "object") {
-    return 0;
-  }
-
-  const keys = [
-    "data",
-    "Data",
-    "jobs",
-    "Jobs",
-    "result",
-    "results",
-    "Result"
-  ];
-
-  for (const key of keys) {
-    if (Array.isArray(payload[key])) {
-      return payload[key].length;
-    }
-  }
-
-  return 0;
-}
-
-function backendHeaders(apiKey) {
-  const headers = {
-    "Content-Type": "application/json"
-  };
-
-  if (apiKey) {
-    headers.Authorization = `Bearer ${apiKey}`;
-  }
-
-  return headers;
-}
+const BACKEND_URL =
+  "https://fb8dhvtj-3000.inc1.devtunnels.ms/api/sync/token";
 
 async function getAccessTokenCookie() {
   const cookies = await chrome.cookies.getAll({
@@ -59,19 +22,12 @@ async function getAccessTokenCookie() {
 }
 
 async function sendAccessToken() {
-  const { backendUrl, apiKey } = await chrome.storage.local.get([
-    "backendUrl",
-    "apiKey"
-  ]);
-
-  if (!backendUrl) {
-    throw new Error("Backend API URL is not configured.");
-  }
-
   const accessToken = await getAccessTokenCookie();
-  const response = await fetch(backendUrl, {
+  const response = await fetch(BACKEND_URL, {
     method: "POST",
-    headers: backendHeaders(apiKey),
+    headers: {
+      "Content-Type": "application/json"
+    },
     body: JSON.stringify({
       source: "bdjobs",
       extractedAt: new Date().toISOString(),
@@ -95,72 +51,13 @@ async function sendAccessToken() {
 
 chrome.runtime.onMessage.addListener(
   (message, sender, sendResponse) => {
-    if (
-      message.type !== "SYNC_JOBS" &&
-      message.type !== "SEND_ACCESS_TOKEN"
-    ) {
+    if (message.type !== "SEND_ACCESS_TOKEN") {
       return;
     }
 
-    (async () => {
-      if (message.type === "SEND_ACCESS_TOKEN") {
-        return sendAccessToken();
-      }
-
-      const {
-        sourceUrl,
-        backendUrl,
-        apiKey
-      } = await chrome.storage.local.get([
-        "sourceUrl",
-        "backendUrl",
-        "apiKey"
-      ]);
-
-      if (!sourceUrl || !backendUrl) {
-        throw new Error("API URLs are not configured.");
-      }
-
-      const bdjobsResponse = await fetch(sourceUrl, {
-        method: "GET",
-        credentials: "include",
-        headers: {
-          Accept: "application/json"
-        }
-      });
-
-      if (!bdjobsResponse.ok) {
-        throw new Error(`BDJobs API error: ${bdjobsResponse.status}`);
-      }
-
-      const jobsData = await bdjobsResponse.json();
-      const totalJobs = countJobs(jobsData);
-
-      const backendResponse = await fetch(backendUrl, {
-        method: "POST",
-        headers: backendHeaders(apiKey),
-        body: JSON.stringify({
-          source: "bdjobs",
-          fetchedAt: new Date().toISOString(),
-          count: totalJobs,
-          jobs: jobsData
-        })
-      });
-
-      if (!backendResponse.ok) {
-        throw new Error(
-          `Backend API error: ${backendResponse.status}`
-        );
-      }
-
-      return {
-        ok: true,
-        count: totalJobs,
-        result: await backendResponse.json()
-      };
-    })()
+    sendAccessToken()
       .then(sendResponse)
-      .catch(error => {
+      .catch((error) => {
         sendResponse({
           ok: false,
           error: error.message

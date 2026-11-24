@@ -48,3 +48,11 @@ button {
   margin-top: 12px;
   overflow-wrap: anywhere;
 }
+
+#status.success {
+  color: #166534;
+}
+
+#status.error {
+  color: #b91c1c;
+}
