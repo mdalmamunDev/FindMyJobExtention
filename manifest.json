@@ -1,0 +1,27 @@
+
+{
+  "manifest_version": 3,
+  "name": "BDJobs Job Sync",
+  "version": "1.0.0",
+  "description": "Fetch BDJobs jobs and sync them to your backend.",
+  "action": {
+    "default_popup": "popup.html"
+  },
+  "background": {
+    "service_worker": "background.js"
+  },
+  "permissions": [
+    "storage",
+    "cookies"
+  ],
+  "host_permissions": [
+    "https://bdjobs.com/*",
+    "https://*.bdjobs.com/*",
+    "https://api.bdjobs.com/*"
+  ],
+  "optional_host_permissions": [
+    "https://*/*",
+    "http://localhost/*",
+    "http://127.0.0.1/*"
+  ]
+}
